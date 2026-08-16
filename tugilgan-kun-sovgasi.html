@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tug'ilgan kuningiz muborak!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#FF3E7F;
+    --yellow:#FFC93C;
+    --purple:#7C3AED;
+    --indigo:#180C2E;
+    --indigo2:#241243;
+    --mint:#2DD4BF;
+    --paper:#FFF9F0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--indigo);
+    color:var(--paper);
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- Confetti background ---------- */
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+  .piece{
+    position:absolute;
+    top:-40px;
+    width:10px;height:16px;
+    opacity:0.9;
+    border-radius:2px;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(540deg); }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:32px 20px;
+    z-index:2;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255,62,127,0.35), transparent 45%),
+      radial-gradient(circle at 80% 85%, rgba(124,58,237,0.4), transparent 50%),
+      var(--indigo);
+  }
+  .eyebrow{
+    font-size:14px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--mint);
+    font-weight:600;
+    margin-bottom:18px;
+  }
+  h1.headline{
+    font-family:'Fredoka',sans-serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 9vw, 6rem);
+    line-height:1.05;
+    background:linear-gradient(100deg, var(--pink), var(--yellow) 55%, var(--mint));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 60px rgba(255,62,127,0.25);
+  }
+  .headline .name{
+    display:block;
+    /* O'ZGARTIRING: Ism shu yerda */
+  }
+  .subline{
+    margin-top:22px;
+    font-size:clamp(1rem, 2.2vw, 1.25rem);
+    color:#E9E1FF;
+    max-width:560px;
+    font-weight:300;
+  }
+  .scroll-hint{
+    margin-top:60px;
+    font-size:13px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:#B7ACDA;
+    animation:bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(10px);}
+  }
+
+  /* ---------- Photo section ---------- */
+  section{
+    position:relative;
+    z-index:2;
+    padding:100px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  .section-title{
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:clamp(1.7rem, 4vw, 2.6rem);
+    color:var(--yellow);
+    margin-bottom:36px;
+  }
+  .polaroid{
+    background:var(--paper);
+    padding:18px 18px 70px 18px;
+    border-radius:6px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+    transform:rotate(-4deg);
+    transition:transform 0.4s ease;
+    max-width:340px;
+    width:100%;
+  }
+  .polaroid:hover{transform:rotate(0deg) scale(1.03);}
+  .polaroid .photo-slot{
+    width:100%;
+    aspect-ratio:1/1;
+    background:
+      linear-gradient(135deg, #3a2a5c, #241243);
+    border-radius:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#B7ACDA;
+    font-size:14px;
+    text-align:center;
+    padding:20px;
+    /* O'ZGARTIRING: <img> tegini shu yerga qo'ying yoki background-image bilan almashtiring */
+  }
+  .polaroid .caption{
+    color:var(--indigo);
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    margin-top:16px;
+    font-size:15px;
+  }
+
+  /* ---------- Message / gift box ---------- */
+  .gift-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+  }
+  .gift-box{
+    cursor:pointer;
+    width:150px;
+    height:130px;
+    position:relative;
+    user-select:none;
+  }
+  .gift-box .lid{
+    position:absolute;
+    top:0;left:-8px;right:-8px;
+    height:34px;
+    background:var(--pink);
+    border-radius:8px;
+    transition:transform 0.5s cubic-bezier(.34,1.56,.64,1);
+    z-index:2;
+  }
+  .gift-box .lid::after{
+    content:"";
+    position:absolute;
+    left:50%;top:-14px;
+    transform:translateX(-50%);
+    width:16px;height:28px;
+    background:var(--yellow);
+    border-radius:4px;
+  }
+  .gift-box .body{
+    position:absolute;
+    top:30px;left:0;right:0;bottom:0;
+    background:var(--purple);
+    border-radius:6px;
+  }
+  .gift-box .ribbon{
+    position:absolute;
+    top:30px;left:50%;
+    transform:translateX(-50%);
+    width:18px;height:100px;
+    background:var(--yellow);
+  }
+  .gift-box.open .lid{
+    transform:translateY(-60px) rotate(-18deg);
+  }
+  .gift-hint{
+    font-size:13px;
+    color:#B7ACDA;
+    letter-spacing:0.05em;
+  }
+  .message{
+    max-width:600px;
+    font-size:clamp(1.1rem, 2.6vw, 1.4rem);
+    line-height:1.7;
+    font-weight:300;
+    color:#F2EEFF;
+    opacity:0;
+    max-height:0;
+    overflow:hidden;
+    transition:opacity 0.6s ease, max-height 0.8s ease;
+  }
+  .message.show{
+    opacity:1;
+    max-height:400px;
+    margin-top:8px;
+  }
+  .message .highlight{
+    color:var(--mint);
+    font-weight:500;
+  }
+  /* O'ZGARTIRING: Tabrik matni .message ichida */
+
+  /* ---------- Wish button ---------- */
+  .wish-area{
+    margin-top:20px;
+  }
+  .wish-btn{
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:16px;
+    padding:16px 34px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(100deg, var(--pink), var(--purple));
+    color:white;
+    cursor:pointer;
+    box-shadow:0 12px 30px rgba(255,62,127,0.35);
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .wish-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 36px rgba(255,62,127,0.5);
+  }
+  .wish-btn:active{transform:translateY(0);}
+  .wish-note{
+    margin-top:18px;
+    font-size:14px;
+    color:var(--mint);
+    opacity:0;
+    transition:opacity 0.5s ease;
+  }
+  .wish-note.show{opacity:1;}
+
+  footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:50px 20px 70px;
+    color:#6C5E96;
+    font-size:13px;
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- Family photo in wish section ---------- */
+  .family-polaroid{
+    background:var(--paper);
+    padding:16px 16px 60px 16px;
+    border-radius:6px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+    transform:rotate(3deg);
+    transition:transform 0.4s ease;
+    max-width:300px;
+    width:100%;
+    margin:30px auto 0;
+  }
+  .family-polaroid:hover{transform:rotate(0deg) scale(1.03);}
+  .family-polaroid .photo-slot{
+    width:100%;
+    aspect-ratio:4/3;
+    background:linear-gradient(135deg, #3a2a5c, #241243);
+    border-radius:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#B7ACDA;
+    font-size:14px;
+    text-align:center;
+    padding:20px;
+  }
+  .family-polaroid .caption{
+    color:var(--indigo);
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    margin-top:14px;
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<div id="confetti"></div>
+
+<section class="hero">
+  <div class="eyebrow">Maxsus bir kun</div>
+  <h1 class="headline">Tug'ilgan kuningiz<br><span class="name">muborak, jannatim onam!</span></h1>
+  <p class="subline">Bu kun siz uchun, va bu sahifa ham shunday. Pastga tushing — sizga kichkina bir sovg'am bor.</p>
+  <div class="scroll-hint">pastga suring ↓</div>
+</section>
+
+<section id="photo">
+  <div class="section-title">Bu yilning eng yaxshi lahzasi</div>
+  <div class="polaroid">
+    <div class="photo-slot" style="padding:0;">
+      <img src="photo_2026-08-16_09-45-40.jpg" alt="Oilaviy rasm" style="width:50%;height:100%;object-fit:cover;border-radius:2px;">
+    </div>
+    <div class="caption">Jannatim onam 🌷</div>
+  </div>
+</section>
+
+<section id="gift">
+  <div class="section-title">Senga bir sovg'a bor</div>
+  <div class="gift-wrap">
+    <div class="gift-box" id="giftBox" role="button" tabindex="0" aria-label="Sovg'ani ochish">
+      <div class="lid"></div>
+      <div class="ribbon"></div>
+      <div class="body"></div>
+    </div>
+    <div class="gift-hint">qutini bosing</div>
+    <p class="message" id="message">
+      Onajonim, siz mening <span class="highlight">jannatim</span>, qalbimdagi eng aziz insonimsiz. 🌷<br><br>
+      Doimo sog‘-salomat, baxtli va xotirjam bo‘lib yuring. Har bir kuningiz quvonchga, yuzingiz tabassumga to‘lsin. 🤲<br><br>
+      Alloh sizga uzoq umr, mustahkam sog‘lik va go‘zal kunlar nasib etsin. Men uchun qilgan barcha mehnatlaringiz va mehringiz uchun rahmat, onajonim. ❤️<br><br>
+      Sizni juda yaxshi ko‘raman, <span class="highlight">jannatim onam</span>! 🌹
+    </p>
+  </div>
+</section>
+
+<section id="wish">
+
+  <div class="family-polaroid">
+    <div class="photo-slot" style="padding:0;">
+      <img src="IMG_20260122_212722.jpg"Oilaviy rasm" style="width:100%;height:70%;object-fit:cover;border-radius:2px;">
+    </div>
+    <div class="caption">Farzandingizdan, seni yaxshi ko'ramiz 🌷</div>
+  </div>
+</section>
+
+<footer>
+  bilan yasalgan sahifa • farzandingizdan sovg'a
+</footer>
+
+<script>
+  // Background confetti
+  const confettiWrap = document.getElementById('confetti');
+  const colors = ['#FF3E7F','#FFC93C','#7C3AED','#2DD4BF'];
+  function spawnConfetti(count){
+    for(let i=0;i<count;i++){
+      const p = document.createElement('div');
+      p.className = 'piece';
+      p.style.left = Math.random()*100 + 'vw';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.animationDuration = (4 + Math.random()*4) + 's';
+      p.style.animationDelay = (Math.random()*5) + 's';
+      p.style.opacity = 0.6 + Math.random()*0.4;
+      confettiWrap.appendChild(p);
+    }
+  }
+  spawnConfetti(40);
+
+  // Gift box open
+  const box = document.getElementById('giftBox');
+  const msg = document.getElementById('message');
+  function openGift(){
+    box.classList.toggle('open');
+    msg.classList.toggle('show');
+  }
+  box.addEventListener('click', openGift);
+  box.addEventListener('keypress', (e)=>{ if(e.key==='Enter' || e.key===' ') openGift(); });
+
+  // Wish button burst
+  const wishBtn = document.getElementById('wishBtn');
+  const wishNote = document.getElementById('wishNote');
+  wishBtn.addEventListener('click', ()=>{
+    spawnConfetti(60);
+    wishNote.classList.add('show');
+  });
+</script>
+
+</body>
+</html>
